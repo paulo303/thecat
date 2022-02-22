@@ -15,13 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('inicio', function(){
-    $users = DB::select('select * from users');
-    var_dump($users);
-});
+    return view('homecats');
+})->middleware('auth');;
 
 Auth::routes();
 
