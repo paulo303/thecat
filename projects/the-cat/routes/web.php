@@ -22,3 +22,7 @@ Route::get('inicio', function(){
     $users = DB::select('select * from users');
     var_dump($users);
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
