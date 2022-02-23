@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
+Route::get('/breeds', [App\Http\Controllers\Api\BreedController::class, 'index']);
+Route::get('/breeds/', [App\Http\Controllers\Api\BreedController::class, 'search']);
+Route::post('/breeds', [App\Http\Controllers\Api\BreedController::class, 'store']);

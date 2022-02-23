@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
+use GuzzleHttp\Psr7\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +17,23 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('homecats');
+    return redirect()->route('breeds');
 })->middleware('auth');;
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/breeds/', [App\Http\Controllers\BreedController::class, 'index'])->name('breeds');
+
+Route::get('/teste', function () {
+    // $request = new Request('GET', 'http://dummy.restapiexample.com/api/v1/employees');
+    // $response = Http::get('https://api.thecatapi.com/v1/breeds');
+    $response = Http::get('http://dummy.restapiexample.com/api/v1/employees');
+    // dd($response->json());
+    // dd($response->array());
+    // dd($response->getBody());
+    $body = $response->body();
+    $body = json_decode($body);
+
+    dd($body);
+});
