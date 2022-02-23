@@ -1,0 +1,22 @@
+.breed_data {
+    background: #fff;
+    border-radius: 4px;
+    padding: 20px;
+    font-size: 12px;
+    text-align: left;
+    transition: all 0.2s;
+    margin: 0 auto;
+    width: 500px;
+}
+
+.breed_image {
+    background: #fff;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 360px;
+}
+
+.w200 {
+    width: 100px;
+}
