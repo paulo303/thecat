@@ -1,15 +1,4 @@
-#banner-message {
-    background: #fff;
-    border-radius: 4px;
-    padding: 20px;
-    font-size: 25px;
-    text-align: center;
-    transition: all 0.2s;
-    margin: 0 auto;
-    width: 500px;
-  }
-
-  #breed_data {
+.breed_data {
     background: #fff;
     border-radius: 4px;
     padding: 20px;
@@ -18,11 +7,16 @@
     transition: all 0.2s;
     margin: 0 auto;
     width: 500px;
-  }
+}
 
-  #breed_image {
+.breed_image {
     background: #fff;
     margin: 0 auto;
     margin-top: 20px;
-    width: 460px;
-  }
+    margin-bottom: 20px;
+    width: 360px;
+}
+
+.w200 {
+    width: 100px;
+}

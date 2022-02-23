@@ -1,66 +1,108 @@
+var api_url = 'http://127.0.0.1:8000/api/breeds';
+var url = 'http://127.0.0.1:8000/';
+
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
 $("#buscar").click(function (e) {
-    var nome = $("#nome").val();
-    var tamanho = nome.length;
+    clearBreed();
+    var name = $("#name").val();
+    var tamanho = name.length;
 
     if (tamanho < 3) {
         alert('Digite no mínimo 3 letras');
         return false;
     }
+    searchDB(name);
 
-    getCatByBreed(nome);
-
+    // getCatByBreed(name);
 });
 
-function getCatByBreed(breed) {
-    // search for images that contain the breed (breed_id=) and attach the breed object (include_breed=1)
-    ajax_get('https://api.thecatapi.com/v1/breeds/search?q=' + breed, function(data) {
+function searchDB(name) {
+    $.ajax({
+        url: api_url,
+        type: 'GET',
+        dataType: 'JSON',
+        contentType: 'application/json',
+        data: {'name': name},
+        success: function(result){
+            if (result.length > 0) {
+                for (let index = 0; index < result.length; index++) {
+                    const element = result[index];
+                    displayBreed(element);
+                }
+            } else {
+                searchAPI(name);
+            }
+        },
+        error: function(error) {
+            console.log(error.responseJSON.message);
+        }
+    });
+
+    return true;
+}
+
+function searchAPI(name) {
+    ajax_get('https://api.thecatapi.com/v1/breeds/search?q=' + name, function(data) {
         if (data.length == 0) {
-            clearBreed();
             $("#mensagem_erro").append("Nenhuma raça encontrada");
         } else {
-            $("#mensagem_erro").html('');
-            getImageCat(data[0].reference_image_id);
+            getImageCat(data);
         }
     });
 }
 
-function getImageCat(image_id) {
-    ajax_get('https://api.thecatapi.com/v1/images/' + image_id, function(data) {
-        displayBreed(data);
+function getImageCat(data) {
+    for (let index = 0; index < data.length; index++) {
+        const element = data[index];
+        ajax_get('https://api.thecatapi.com/v1/images/' + element.reference_image_id, function(data) {
+            saveCat(data);
+            var breed_data = data.breeds[0];
+            breed_data.url_image = data.url;
+
+            displayBreed(breed_data);
+        });
+    }
+}
+
+function saveCat(data) {
+    $.ajax({
+        url: api_url,
+        type: 'POST',
+        dataType: 'JSON',
+        contentType: 'application/json',
+        data:JSON.stringify(data),
+        success: function(result){
+            console.log(result);
+        },
+        error: function(error) {
+            console.log(error.responseJSON.message);
+        }
     });
+}
+
+// display the breed image and data
+function displayBreed(data) {
+    $("#resultado").append('<div align="center"><img class="breed_image" src="' + data.url_image + '"/></div>');
+    $("#resultado").append('<table class="breed_data_table"></table>');
+    $("#resultado").append("<tr><td class='w200'><b>Nome</b></td><td>" + data.name + "</td></tr>");
+    $("#resultado").append("<tr><td class='w200'><b>Origem</b></td><td>" + data.origin + "</td></tr>");
+    $("#resultado").append("<tr><td class='w200'><b>Peso</b></td><td>" + data.weight_metric + "</td></tr>");
+    $("#resultado").append("<tr><td class='w200'><b>Tempo de vida</b></td><td>" + data.life_span + "</td></tr>");
+    $("#resultado").append("<tr><td class='w200'><b>Wikipedia</b></td><td><a href='" + data.wikipedia_url + "' target='_blank'>" + data.wikipedia_url + "</a></td></tr>");
+    $("#resultado").append("<tr><td class='w200'><b>Descrição</b></td><td>" + data.description + "</td></tr>");
+    $("#resultado").append('</table>');
+    $("#resultado").append('<hr>');
 }
 
 // clear the image and table
 function clearBreed() {
-    $('#breed_image').attr('src', "");
-    $("#breed_data_table tr").remove();
+    $('#resultado').html('');
     $("#mensagem_erro").html('');
-}
-
-// display the breed image and data
-function displayBreed(image) {
-    $('#breed_image').attr('src', image.url);
-    $("#breed_data_table tr").remove();
-
-    var breed_data = image.breeds[0];
-
-    var total = image.breeds.length;
-
-    alert(total);
-
-    $("#breed_data_table").append("<tr><td>Nome</td><td>" + breed_data.name + "</td></tr>");
-    $("#breed_data_table").append("<tr><td>Origem</td><td>" + breed_data.origin + "</td></tr>");
-    $("#breed_data_table").append("<tr><td>Peso</td><td>" + breed_data.weight.metric + "</td></tr>");
-    $("#breed_data_table").append("<tr><td>Tempo de vida</td><td>" + breed_data.life_span + "</td></tr>");
-    $("#breed_data_table").append("<tr><td>Descrição</td><td>" + breed_data.description + "</td></tr>");
-    $("#breed_data_table").append("<tr><td>Wikipedia</td><td><a href='" + breed_data.wikipedia_url + "' target='_blank'>" + breed_data.wikipedia_url + "</a></td></tr>");
-
-    // $.each(breed_data, function(key, value) {
-    //     // as 'weight' and 'height' are objects that contain 'metric' and 'imperial' properties, just use the metric string
-    //     if (key == 'weight' || key == 'height') value = value.metric
-    //     // add a row to the table
-    //     $("#breed_data_table").append("<tr><td>" + key + "</td><td>" + value + "</td></tr>");
-    // });
 }
 
 // make an Ajax request
