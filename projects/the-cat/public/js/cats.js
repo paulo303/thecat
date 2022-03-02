@@ -1,5 +1,5 @@
-var api_url = 'http://127.0.0.1:8000/api/breeds';
-var url = 'http://127.0.0.1:8000/';
+var api_url = 'http://localhost/api/breeds';
+var url = 'http://localhost/';
 
 $.ajaxSetup({
     headers: {
@@ -39,7 +39,8 @@ function searchDB(name) {
             }
         },
         error: function(error) {
-            console.log(error.responseJSON.message);
+            // console.log(error.responseJSON.message);
+            console.log(error);
         }
     });
 

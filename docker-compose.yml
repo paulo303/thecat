@@ -2,12 +2,12 @@ version: "3.9"
 services: 
     web-server:
       image: nginx:1.21.1
-      container_name: webdev-nginx
+      container_name: pg-nginx
       ports:
         - "80:80"
         - "443:443"
       networks:
-        - web-dev
+        - piaget
       volumes:
         - ./confs/servers/:/etc/nginx/conf.d/
         - ./projects:/var/www/html
@@ -18,30 +18,30 @@ services:
         dockerfile: ./php.dockerfile
         context: .
       image: php7.4-fpm
-      container_name: webdev-php
+      container_name: pg-php
       volumes: 
         - ./projects:/var/www/html
       ports: 
         - "9000:9000"
       networks: 
-        - web-dev
+        - piaget
 
     db:
       image: mysql:8.0.26
-      container_name: webdev-mysql
+      container_name: pg-mysql
       volumes: 
         - ./confs/mysql_db:/var/lib/mysql
       command: --default-authentication-plugin=mysql_native_password
       environment:
         MYSQL_ROOT_PASSWORD: root
-        MYSQL_DATABASE: thecat
+        MYSQL_DATABASE: test_db
         MYSQL_USER: devuser
         MYSQL_PASSWORD: devpass
       ports:
         - "3306:3306"
       networks: 
-        - web-dev
+        - piaget
 
 networks: 
-      web-dev:
+      piaget:
         driver: bridge
