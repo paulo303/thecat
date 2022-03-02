@@ -2,7 +2,7 @@
 $host = 'db';
 $user = 'devuser';
 $password = 'devpass';
-$db = 'thecat';
+$db = 'test_db';
 
 $conn = new mysqli($host, $user, $password, $db);
 if ($conn->connect_error){
