@@ -11,4 +11,13 @@
     <li>Realiza busca de raças por nome;</li>
     <li>Guardar os resultados encontrados no banco de dados.</li>
   </ul>
+  <h2>Passo a passo:</h2>
+  <ul>
+    <li>Renomear o arquivo /projects/the-cat/.env.example para .env (já está configurado)</li>
+    <li>docker compose up -d</li>
+    <li>docker exec -it pg-php bash</li>
+    <li>cd the-cat <i>(para entrar no diretório do projeto)</i></li>
+    <li>composer install</li>
+    <li>php artisan migrate</li>
+  </ul>
 </div>
